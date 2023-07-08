@@ -27,7 +27,7 @@ public:
     }
 
     void addNode(nodeValue_t node, int _row, int _col){
-
+        nodes.push_back(node);
     }
 
 
