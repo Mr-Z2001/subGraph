@@ -1,9 +1,17 @@
-cmake_minimum_required(VERSION 3.25)
-project(SubGraphIsomorphism CUDA)
+cmake_minimum_required(VERSION 3.9)
+project(SubGraphIsomorphism LANGUAGES CXX CUDA)
 
 set(CMAKE_CUDA_STANDARD 17)
 
-add_executable(SubGraphIsomorphism main.cu)
+include_directories(include)
 
-set_target_properties(SubGraphIsomorphism PROPERTIES
+add_subdirectory(src)
+add_subdirectory(include)
+add_subdirectory(test)
+
+add_executable(SubGraph src/main.cu)
+
+target_link_libraries(SubGraph PUBLIC LEVELCSR)
+
+set_target_properties(SubGraph PROPERTIES
         CUDA_SEPARABLE_COMPILATION ON)
