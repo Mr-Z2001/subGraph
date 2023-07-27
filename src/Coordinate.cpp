@@ -132,9 +132,22 @@ const Coordinate Coordinate::operator--(int) {
     return tmp;
 }
 
-std::ostream &operator<<(std::ostream &os, const Coordinate &coordinate) {
-    os << "row: " << coordinate.getRow() << " col: " << coordinate.getCol();
-    return os;
+Coordinate Coordinate::operator-() const {
+    return Coordinate(-row, -col);
 }
 
+Coordinate Coordinate::operator+() const {
+    return *this;
+}
 
+Coordinate Coordinate::operator~() const {
+    return Coordinate(~row, ~col);
+}
+
+Coordinate Coordinate::operator!() const {
+    return Coordinate(!row, !col);
+}
+
+Coordinate Coordinate::operator&(const Coordinate &rhs) const {
+    return Coordinate(row & rhs.row, col & rhs.col);
+}

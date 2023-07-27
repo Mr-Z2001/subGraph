@@ -1,7 +1,7 @@
 # SubGraph Isomorphism 
 
 ## Introduction
-This project is a subgraph isomorphism implementation in C++ with CUDA.
+This project is a subgraph isomorphism implementation in C++ and CUDA.
 
 ## Build
 

@@ -74,8 +74,6 @@ public:
 
     Coordinate operator&(const Coordinate &rhs) const;
 
-    std::ostream &operator<<(std::ostream &os, const Coordinate &coordinate)
-
 
 };
 
