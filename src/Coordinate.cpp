@@ -1,7 +1,3 @@
-//
-// Created by z on 23-7-8.
-//
-
 #include <iostream>
 #include "Coordinate.h"
 

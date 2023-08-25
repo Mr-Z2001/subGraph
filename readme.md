@@ -21,5 +21,5 @@ cmake --build . --config Release
 ## Run
 ```bash
 cd build
-./SubGraph -p <pattern_file> -d <data_file> -o <output_file> [-t <thread_num>] [-b <block_num>]
+./SubGraph <pattern_file> <data_file> <output_file>
 ```

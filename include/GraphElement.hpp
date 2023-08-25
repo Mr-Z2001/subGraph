@@ -1,7 +1,3 @@
-//
-// Created by z on 23-8-3.
-//
-
 #ifndef SUBGRAPHISOMORPHISM_GRAPHELEMENT_H
 #define SUBGRAPHISOMORPHISM_GRAPHELEMENT_H
 
@@ -39,8 +35,7 @@ public:
   }
 
   bool operator==(const Node &rhs) const {
-    return id == rhs.id &&
-           label == rhs.label;
+    return id == rhs.id;
   }
 
   bool operator!=(const Node &rhs) const {

@@ -1,0 +1,1 @@
+build/SubGraph ~/code/dataset/Mydata/query.graph ~/code/dataset/Mydata/data.graph ./result.txt

@@ -1,11 +1,12 @@
-//
-// Created by z on 23-7-3.
-//
-
 #ifndef SUBGRAPHISOMORPHISM_LEVELCSR_H
 #define SUBGRAPHISOMORPHISM_LEVELCSR_H
 
 #include <vector>
+
+#include <thrust/device_vector.h>
+#include <thrust/host_vector.h>
+#include <thrust/copy.h>
+#include <thrust/fill.h>
 
 #include "MatrixElement.h"
 #include "GraphElement.hpp"
@@ -36,6 +37,7 @@ public:
     for (int i = 0; i < vme.size(); ++i) {
       col[i] = vme[i].getCoordinate().getCol();
       edges[i] = vme[i].getEdgeValue();
+//      edges[i] = vme[i].getEdgeValue();
     }
     int currentRow = -1;
     int currentPartition = -1;
@@ -59,6 +61,66 @@ public:
           index2[currentPartition] = i + 1;
           currentPartitionSize = 1;
         }
+      }
+    }
+  }
+
+  void deleteNode(Node_t node) {
+    Node_t u;
+    for (int i = 0; i < nodes.size(); ++i) {
+      if (nodes[i].getId() == node) {
+        u = i;
+        break;
+      }
+    }
+    int start = index2[index1[u]];
+    int end = index2[index1[u] + 1];
+    int counter = end - start;
+    edges.erase(edges.begin() + start, edges.begin() + end);
+    col.erase(col.begin() + start, col.begin() + end);
+    for (int i = index1[u] + 1; i < index1.size(); ++i) {
+      index2[i] -= counter;
+    }
+    index2.erase(index2.begin() + index1[u], index2.begin() + index1[u] + 1);
+    for (int i = index1.size() - 1; i > index1[u]; --i) {
+      index1[i - 1] = index1[i];
+    }
+    index1.pop_back();
+    nodes.erase(nodes.begin() + u, nodes.begin() + u + 1);
+  }
+
+  // TODO: review this function
+  void addEdge(Edge e) {
+    bool isNewSrc = true;
+    Node_t src = e.getSrc();
+    Node_t dest = e.getDst();
+    int pos = 0;
+    for (auto node: nodes) {
+      if (node.getId() == src) {
+        isNewSrc = false;
+        break;
+      } else pos++;
+    }
+    if (isNewSrc) {
+      Node n(src, -1);
+      nodes.push_back(n);
+      index1.push_back(index2.size());
+      index2.push_back(col.size());
+      col.push_back(dest);
+      edges.push_back(e);
+    } else { // existing src node
+      int end = index2[index1[pos] + 1];
+      int end_1 = index2[index1[pos]];
+      if (end - end_1 == partitionSize) { // partition is full
+        index2.insert(index2.begin() + index1[pos + 1], end);
+        col.insert(col.begin() + end, dest);
+        edges.insert(edges.begin() + end, e);
+        for (int i = index1[pos + 1]; i < index1.size(); ++i) index2[i]++;
+      } else { // partition is not full
+        int start = index2[index1[pos]];
+        col.insert(col.begin() + start, dest);
+        edges.insert(edges.begin() + start, e);
+        for (int i = index1[pos] + 1; i < index1.size(); ++i) index2[i]++;
       }
     }
   }
@@ -112,27 +174,27 @@ public:
   }
 
   Node getNode(int i) {
-    if(i > nodes.size() - 1) return nodes[nodes.size() - 1];
+    if (i > nodes.size() - 1) return nodes[nodes.size() - 1];
     return nodes[i];
   }
 
   int getIndex1(int i) {
-    if(i > index1.size() - 1) return index1[index1.size() - 1];
+    if (i > index1.size() - 1) return index1[index1.size() - 1];
     return index1[i];
   }
 
   int getIndex2(int i) {
-    if(i > index2.size() - 1) return index2[index2.size() - 1];
+    if (i > index2.size() - 1) return index2[index2.size() - 1];
     return index2[i];
   }
 
   int getCol(int i) {
-    if(i > col.size() - 1) return col[col.size() - 1];
+    if (i > col.size() - 1) return col[col.size() - 1];
     return col[i];
   }
 
   Edge getEdges(int i) {
-    if(i > edges.size() - 1) return edges[edges.size() - 1];
+    if (i > edges.size() - 1) return edges[edges.size() - 1];
     return edges[i];
   }
 };

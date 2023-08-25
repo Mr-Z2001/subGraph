@@ -1,7 +1,3 @@
-//
-// Created by z on 23-7-8.
-//
-
 #ifndef SUBGRAPHISOMORPHISM_COORDINATE_H
 #define SUBGRAPHISOMORPHISM_COORDINATE_H
 
