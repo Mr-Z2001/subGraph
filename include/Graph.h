@@ -52,7 +52,7 @@ public:
   int *encoding;
   int *candidates;
   int candidateSize;
-  double *score;
+  float *score;
   int *order;
 
   int *inDegree;

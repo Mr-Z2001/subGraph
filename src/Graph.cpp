@@ -41,7 +41,7 @@ void Graph::load(const char *filename, std::vector<std::vector<std::pair<VID_t, 
   index1 = (int *) realloc(index1, n * sizeof(int));
   core = (VID_t *) realloc(core, n * sizeof(VID_t));
   forest = (VID_t *) realloc(forest, n * sizeof(VID_t));
-  score = (double *) realloc(score, n * sizeof(double));
+  score = (float *) realloc(score, n * sizeof(float));
   order = (int *) realloc(order, n * sizeof(int));
   index2 = (int *) realloc(index2, m * sizeof(int));
   node_labels = (Label_t *) realloc(node_labels, n * sizeof(Label_t));
@@ -86,7 +86,7 @@ void Graph::load(const char *filename, std::vector<std::vector<std::pair<VID_t, 
 
   std::set<int> labels;
   for (int i = 0; i < edgesCount; ++i) {
-    f >> from >> to >> label; // `from` asc required.
+    f >> from >> to >> label;
 #ifdef DEBUG
     std::cout << from << ' ' << to << ' ' << label << std::endl;
 #endif

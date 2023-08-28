@@ -45,11 +45,12 @@ void getCoreForest(Graph g, int *core, int *forest) {
 }
 
 __global__ void
-getScore(int *nodesCount, int *candidateSize, int *candidates, int *inDegree, int *outDegree, double *score) {
+getScore(int *nodesCount, int *candidateSize, int *candidates, int *inDegree, int *outDegree, float *score) {
   int tid = threadIdx.x + blockIdx.x * blockDim.x;
   if (tid >= nodesCount[0]) return;
   int cnt = 0;
   for (int i = tid * candidateSize[0]; i < (tid + 1) * candidateSize[0]; ++i)
     if (candidates[i] == 1) cnt++;
-  score[tid] = cnt * 1.0 / (inDegree[tid] + outDegree[tid]);
+  printf("node_id: %d, cnt: %d\n", tid, cnt);
+  score[tid] = cnt * 1.0 / inDegree[tid];
 }

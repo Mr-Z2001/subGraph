@@ -7,11 +7,12 @@
 #include "Graph.h"
 
 __global__
-void getEncoding(int *nodesCount,
-                 int *edgesCount,
+void getEncoding(int nodesCount,
+                 int edgesCount,
                  int *edges_labels,
                  int *index1,
                  int *index2,
+                 int encodingSize,
                  int *encoding);
 
 __global__
@@ -21,6 +22,7 @@ void firstFiltering(int *g_nodesCount,
                     int *q_nodesCount,
                     int *q_edgesCount,
                     int *q_encoding,
+                    int *encodingSize,
                     int *q_candidates);
 
 #endif //SUBGRAPHISOMORPHISM_FILTER_H

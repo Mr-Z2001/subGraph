@@ -14,6 +14,6 @@
 void getCoreForest(Graph g, int *core, int *forest);
 
 __global__ void
-getScore(int *nodesCount, int *candidateSize, int *candidates, int *inDegree, int *outDegree, double *score);
+getScore(int *nodesCount, int *candidateSize, int *candidates, int *inDegree, int *outDegree, float *score);
 
 #endif //SUBGRAPHISOMORPHISM_DECOMPOSITION_H
