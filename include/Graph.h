@@ -19,12 +19,26 @@ typedef int VID_t;
 typedef int EID_t;
 typedef int Label_t;
 
+#define checkCudaErrors(val) check( (val), #val, __FILE__, __LINE__)
+
+template<typename T>
+void check(T err, const char *const func, const char *const file, const int line) {
+  if (err != cudaSuccess) {
+    std::cerr << "CUDA error at: " << file << ":" << line << std::endl;
+    std::cerr << cudaGetErrorString(err) << " " << func << std::endl;
+    exit(1);
+  }
+}
+
 
 class Graph {
 public:
   int partitionSize;
   int nodesCount;
   int edgesCount;
+  int edgeLabelsCount;
+  int idx2Size;
+  int encodingSize;
 
   VID_t *nodes; // CSR
   int *row; // CSR
@@ -44,17 +58,17 @@ public:
   int *inDegree;
   int *outDegree;
 
-  VID_t* core;
-  VID_t* forest;
+  VID_t *core;
+  VID_t *forest;
 
 public:
-  void load(const char *filename, std::vector<std::vector<int>> &adj);
+  void load(const char *filename, std::vector<std::vector<std::pair<VID_t, Label_t>>> &adj);
 
-  void construct(std::vector<std::vector<int>> &adj) const;
+  void construct(std::vector<std::vector<std::pair<VID_t, Label_t>>> &adj) const;
 
   void deleteNode(VID_t v);
 
-  void decreaseDegree(VID_t v) const;
+  void decreaseDegree(VID_t v, bool* deleted) const;
 
   [[nodiscard]] int getDegree(VID_t v) const;
 

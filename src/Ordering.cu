@@ -8,17 +8,20 @@
 
 void getCoreForest(Graph g, int *core, int *forest) {
   std::vector<VID_t> oneDegreeNodes;
+  bool *deleted = new bool[g.nodesCount];
+  memset(deleted, false, g.nodesCount * sizeof(bool));
 
   while (true) {
     oneDegreeNodes.clear();
     for (int node_g = 0; node_g < g.nodesCount; ++node_g) {
-      if (g.getDegree(node_g) == 1) {
-//        oneDegreeNodes.push_back(node_g);
+      std::cout << "node_g: " << node_g << " degree: " << g.getDegree(node_g) << std::endl;
+      if (g.getDegree(node_g) == 2) {
+        oneDegreeNodes.push_back(node_g);
 //        g.deleteNode(node_g);
 #ifdef DEBUG
         std::cout << "node_g: " << node_g << std::endl;
 #endif
-        g.decreaseDegree(node_g);
+        g.decreaseDegree(node_g, deleted);
       }
     }
     if (oneDegreeNodes.empty()) break;
@@ -28,8 +31,8 @@ void getCoreForest(Graph g, int *core, int *forest) {
 #endif
 
   for (int node_g = 0; node_g < g.nodesCount; ++node_g) {
-    if (g.getDegree(node_g) == 0) forest[node_g] = 1;
-    else core[node_g] = 1;
+    if (!deleted[node_g]) core[node_g] = 1;
+    else forest[node_g] = 1;
   }
 #ifdef DEBUG
   std::cout << "core-forest done." << std::endl;
@@ -41,11 +44,12 @@ void getCoreForest(Graph g, int *core, int *forest) {
 #endif
 }
 
-__global__ void getScore(Graph *g) {
+__global__ void
+getScore(int *nodesCount, int *candidateSize, int *candidates, int *inDegree, int *outDegree, double *score) {
   int tid = threadIdx.x + blockIdx.x * blockDim.x;
-  if (tid >= g->nodesCount) return;
+  if (tid >= nodesCount[0]) return;
   int cnt = 0;
-  for (int i = tid * g->candidateSize; i < (tid + 1) * g->candidateSize; ++i)
-    if (g->candidates[i] == 1) cnt++;
-  g->score[tid] = cnt * 1.0 / (g->inDegree[tid] + g->outDegree[tid]);
+  for (int i = tid * candidateSize[0]; i < (tid + 1) * candidateSize[0]; ++i)
+    if (candidates[i] == 1) cnt++;
+  score[tid] = cnt * 1.0 / (inDegree[tid] + outDegree[tid]);
 }
